@@ -17,7 +17,7 @@ services:
        - db
      image: wordpress:latest
      ports:
-       - "122.116.214.159:80:80"
+       - "<yourIp>:<yourPort>"
      restart: always
      environment:
        WORDPRESS_DB_HOST: db:3306
