@@ -17,7 +17,7 @@ services:
        - db
      image: wordpress:latest
      ports:
-       - "<yourIp>:<yourPort>"
+       - "8080:80"  #output port to internal port
      restart: always
      environment:
        WORDPRESS_DB_HOST: db:3306
