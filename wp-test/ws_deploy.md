@@ -1,79 +1,77 @@
-
-
 # 設定 windows portfording 到 VM 的規則 . 
-netsh interface portproxy add v4tov4 listenport=80 listenaddress=122.116.214.159 connectport=80 connectaddress=192.168.157.129
-netsh interface portproxy add v4tov4 listenport=4443 listenaddress=122.116.214.159 connectport=443 connectaddress=192.168.157.129
+	netsh interface portproxy add v4tov4 listenport=80 listenaddress=122.116.214.159 connectport=80 connectaddress=192.168.157.129
+	netsh interface portproxy add v4tov4 listenport=4443 listenaddress=122.116.214.159 connectport=443 connectaddress=192.168.157.129
 
-netsh interface portproxy delete v4tov4 listenport=80 listenaddress=122.116.214.159
-netsh interface portproxy delete v4tov4 listenport=443 listenaddress=122.116.214.159
+	netsh interface portproxy delete v4tov4 listenport=80 listenaddress=122.116.214.159
+	netsh interface portproxy delete v4tov4 listenport=443 listenaddress=122.116.214.159
 
-netsh interface portproxy dump
+	netsh interface portproxy dump
 
-## 如果重開電腦 要記得重設. 雖然 dump 出來有資訊 ，但好像都沒作用了.
-
-
-
-手動加入 ssl 的方法
-$ sudo vim /etc/nginx/conf.d/default.conf
-
-server {
-    listen 80;
-    listen 443 ssl;
-    listen [::]:443 ssl;
-
-    # 憑證與金鑰的路徑
-    #ssl_certificate /etc/nginx/ssl/nginx.crt;
-    #ssl_certificate_key /etc/nginx/ssl/nginx.key;
-
-    #include snippets/ssl-params.conf;
-
-    server_name hosenmassage.ddns.net;   # domain當然要用自己的，subdomain請隨自己喜好
-
-    location / {
-        include snippets/wp-reverse-proxy.conf;
-        proxy_pass http://localhost:8080; # 注意這邊跟上面docker-compose設定的port相同
-    }
-}
-
-$ sudo vim /etc/nginx/nginx.conf
-http {
-
-        ##
-        # Basic Settings
-        ##
-
-        # 憑證與金鑰的路徑
-        ssl_certificate /etc/nginx/ssl/nginx.crt;
-        ssl_certificate_key /etc/nginx/ssl/nginx.key;
-
-nginx -t 
-systemctl start nginx
+	## 如果重開電腦 要記得重設. 雖然 dump 出來有資訊 ，但好像都沒作用了.
 
 
 
+# 手動加入 ssl 的方法
+	$ sudo vim /etc/nginx/conf.d/default.conf
+
+	server {
+		listen 80;
+		listen 443 ssl;
+		listen [::]:443 ssl;
+
+		# 憑證與金鑰的路徑
+		#ssl_certificate /etc/nginx/ssl/nginx.crt;
+		#ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+		#include snippets/ssl-params.conf;
+
+		server_name hosenmassage.ddns.net;   # domain當然要用自己的，subdomain請隨自己喜好
+
+		location / {
+			include snippets/wp-reverse-proxy.conf;
+			proxy_pass http://localhost:8080; # 注意這邊跟上面docker-compose設定的port相同
+		}
+	}
+
+	$ sudo vim /etc/nginx/nginx.conf
+	http {
+
+			##
+			# Basic Settings
+			##
+
+			# 憑證與金鑰的路徑
+			ssl_certificate /etc/nginx/ssl/nginx.crt;
+			ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+	nginx -t 
+	systemctl start nginx
 
 
-自動加入 ssl 的方法
-https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
+# 自動加入 ssl 的方法
+	https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
 
-IMPORTANT NOTES:
- - Congratulations! Your certificate and chain have been saved at:
-   /etc/letsencrypt/live/hosenmassage.ddns.net/fullchain.pem
-   Your key file has been saved at:
-   /etc/letsencrypt/live/hosenmassage.ddns.net/privkey.pem
-   Your cert will expire on 2020-05-21. To obtain a new or tweaked
-   version of this certificate in the future, simply run certbot
-   again. To non-interactively renew *all* of your certificates, run
-   "certbot renew"
- - If you like Certbot, please consider supporting our work by:
+	IMPORTANT NOTES:
+	 - Congratulations! Your certificate and chain have been saved at:
+	   /etc/letsencrypt/live/hosenmassage.ddns.net/fullchain.pem
+	   Your key file has been saved at:
+	   /etc/letsencrypt/live/hosenmassage.ddns.net/privkey.pem
+	   Your cert will expire on 2020-05-21. To obtain a new or tweaked
+	   version of this certificate in the future, simply run certbot
+	   again. To non-interactively renew *all* of your certificates, run
+	   "certbot renew"
+	 - If you like Certbot, please consider supporting our work by:
 
-   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
-   Donating to EFF:                    https://eff.org/donate-le
+	   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+	   Donating to EFF:                    https://eff.org/donate-le
 
-更新 
-sudo certbot renew --dry-run
+	更新 
+	sudo certbot renew --dry-run
 
-會放在 /etc/cron.d/certbot
+	會放在 /etc/cron.d/certbot
+
+
+# 自動 backup UPDRAFTPLUS  https://wordpress.blog.tw/updraftplus-wordpress-backup-plugin/
 
 
 
@@ -120,7 +118,7 @@ wordpress 放在
         ],
 
 
-backup 
+手動 backup 
 -----
 备份 MySQL 数据库 :
 
