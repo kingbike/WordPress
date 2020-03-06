@@ -20,6 +20,8 @@ services:
      ports:
        - "8080:80"  #output port to internal port
      restart: always
+     volumes:  #  default upload size is 2mb 
+       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
      environment:
        WORDPRESS_DB_HOST: db:3306
        WORDPRESS_DB_USER: wordpress
