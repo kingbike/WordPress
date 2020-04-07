@@ -49,6 +49,13 @@ nginx -t
 # Way to add ssl auto by using cerbot. 
 	https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
 
+run Certbot Either get and install your certificates
+$ sudo certbot --nginx
+
+Or, just get a certificate
+$ sudo certbot certonly --nginx
+
+
 	IMPORTANT NOTES:
 	 - Congratulations! Your certificate and chain have been saved at:
 	   /etc/letsencrypt/live/hosenmassage.ddns.net/fullchain.pem
@@ -63,6 +70,7 @@ nginx -t
 	   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
 	   Donating to EFF:                    https://eff.org/donate-le
 
+	   
 # renew ssl ,  it will set cron job in   /etc/cron.d/certbot
 	$ sudo certbot renew --dry-run
 
