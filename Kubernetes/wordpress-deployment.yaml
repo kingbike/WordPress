@@ -6,7 +6,7 @@ metadata:
     app: wordpress
 spec:
   #externalIPs:
-  #  - 122.116.214.159 # Network IP of my Mac
+  #  - x.x.x.x # Public IP of my Mac
   ports:
     - name: http
       protocol: TCP
@@ -17,7 +17,7 @@ spec:
     app: wordpress
     tier: frontend
   #type: LoadBalancer
-  #loadBalancerIP: 122.116.214.159
+  #loadBalancerIP: x.x.x.x 
   type: NodePort
 ---
 apiVersion: v1

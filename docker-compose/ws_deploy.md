@@ -1,9 +1,9 @@
 # Setting windows portfording to virtual machine  
-	$ netsh interface portproxy add v4tov4 listenport=80 listenaddress=122.116.214.159 connectport=80 connectaddress=192.168.157.129
-	$ netsh interface portproxy add v4tov4 listenport=4443 listenaddress=122.116.214.159 connectport=443 connectaddress=192.168.157.129
+	$ netsh interface portproxy add v4tov4 listenport=80 listenaddress=<yourPublicIP> connectport=80 connectaddress=<yourVmIP>
+	$ netsh interface portproxy add v4tov4 listenport=4443 listenaddress=<yourPublicIP> connectport=443 connectaddress=<yourVmIP>
 # remove the setting 
-	$ netsh interface portproxy delete v4tov4 listenport=80 listenaddress=122.116.214.159
-	$ netsh interface portproxy delete v4tov4 listenport=443 listenaddress=122.116.214.159
+	$ netsh interface portproxy delete v4tov4 listenport=80 listenaddress=<yourPublicIP>
+	$ netsh interface portproxy delete v4tov4 listenport=443 listenaddress=<yourPublicIP>
 # dump the setting
 	$netsh interface portproxy dump
 ######  **note** : if you reopen window , remember to reset again. even you can see the setting is still exist. but acturlly it's not working. 
@@ -55,7 +55,6 @@ $ sudo certbot --nginx
 Or, just get a certificate
 $ sudo certbot certonly --nginx
 
-
 	IMPORTANT NOTES:
 	 - Congratulations! Your certificate and chain have been saved at:
 	   /etc/letsencrypt/live/hosenmassage.ddns.net/fullchain.pem
@@ -70,7 +69,6 @@ $ sudo certbot certonly --nginx
 	   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
 	   Donating to EFF:                    https://eff.org/donate-le
 
-	   
 # renew ssl ,  it will set cron job in   /etc/cron.d/certbot
 	$ sudo certbot renew --dry-run
 
@@ -80,7 +78,6 @@ $ sudo certbot certonly --nginx
 volumes : 
 -------------------------------
 root@ubuntu:/home/jerry/wp-test# docker volume ls
-
     DRIVER              VOLUME NAME
     local               c2474ac0824cb7303cce5d441803f18bba02f7b0361ff9f93299d8e6b339ab00
     local               daac2067d30553856bd8289c6937dcf2276c29667b0ebdf912a6114f42d96dd3
@@ -88,7 +85,6 @@ root@ubuntu:/home/jerry/wp-test# docker volume ls
 
 $ docker volume inspect wp-test_db_data
 DB locate at :  /var/snap/docker/common/var-lib-docker/volumes/wp-test_db_data/_data
-
     root@ubuntu:/home/jerry/wp-test# docker volume inspect wp-test_db_data
     [
         {
@@ -133,3 +129,13 @@ docker run -d -e VIRTUAL_HOST=hosenmassage.ddns.net \
 
 root@ubuntu:/home/jerry/docker-compose-letsencrypt-nginx-proxy-companion# ./test_start_ssl.sh 192.168.157.129
 
+
+
+# log
+onece I reinstall docker and the db data was broken which make the website  white blank. 
+I re-create container and assign new(empty) dir for mysql container. Then install the wordpress plugin "UpdraftPlus"  to restore data.
+
+# debug run in forgroupd to see output log
+- $ docker-compose up 
+- $ docker logs <container>
+- $ docker exec -it <container> bash 
