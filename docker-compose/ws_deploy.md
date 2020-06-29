@@ -1,16 +1,24 @@
-# Setting windows portfording to virtual machine  
-	$ netsh interface portproxy add v4tov4 listenport=80 listenaddress=<yourPublicIP> connectport=80 connectaddress=<yourVmIP>
-	$ netsh interface portproxy add v4tov4 listenport=4443 listenaddress=<yourPublicIP> connectport=443 connectaddress=<yourVmIP>
-# remove the setting 
-	$ netsh interface portproxy delete v4tov4 listenport=80 listenaddress=<yourPublicIP>
-	$ netsh interface portproxy delete v4tov4 listenport=443 listenaddress=<yourPublicIP>
-# dump the setting
-	$netsh interface portproxy dump
-######  **note** : if you reopen window , remember to reset again. even you can see the setting is still exist. but acturlly it's not working. 
+# ENV setting 
+- **Step 1: 
+    Setting windows portfording to virtual machine**  
+	- $ netsh interface portproxy add v4tov4 listenport=80 listenaddress=<yourPublicIP> connectport=80 connectaddress=<yourVmIP>
+	- $ netsh interface portproxy add v4tov4 listenport=4443 listenaddress=<yourPublicIP> connectport=443 connectaddress=<yourVmIP>
 
----------------------
+    **remove the setting** 
+	- $ netsh interface portproxy delete v4tov4 listenport=80 listenaddress=<yourPublicIP>
+	- $ netsh interface portproxy delete v4tov4 listenport=443 listenaddress=<yourPublicIP>
+    
+    **dump the setting**
+	- $netsh interface portproxy dump
+	
+    **note** : If you restart Windows remember to reset again. even you can see the setting is still exist. but acturlly it's not working. 
 
-# Way to add ssl manully
+- Step 2: put **./default.conf**   to  **/etc/nginx/conf.d/default.conf**
+- Step 3: Put **./wp-reverse-proxy.conf** to  **/etc/nginx/snippets/wp-reverse-proxy.conf**
+- Step 4: docker-compose will put **uploads.ini** to container wordpress  **/usr/local/etc/php/conf.d/uploads.ini**
+
+# Way to add ssl manully : 
+---
 $ sudo vim /etc/nginx/conf.d/default.conf
 
 	server {
@@ -30,30 +38,31 @@ $ sudo vim /etc/nginx/conf.d/default.conf
 			proxy_pass http://localhost:8080; # note this is same as docker-compose port setting 
 		}
 	}
-
 $ sudo vim /etc/nginx/nginx.conf
 
     http {
-
 			##
 			# Basic Settings
 			##
-
 			# the certification localtion
 			ssl_certificate /etc/nginx/ssl/nginx.crt;
 			ssl_certificate_key /etc/nginx/ssl/nginx.key;
 
-nginx -t 
-	systemctl start nginx
+#####  check the nginx configuratoin
+    $ nginx -t 
+#####  start nginx service 
+    $ systemctl start nginx
 
-# Way to add ssl auto by using cerbot. 
+
+# Way to add ssl auto by using cerbot: 
+---
 	https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
 
-run Certbot Either get and install your certificates
-$ sudo certbot --nginx
+#####  Run Certbot Either get and install your certificates
+    $ sudo certbot --nginx
 
-Or, just get a certificate
-$ sudo certbot certonly --nginx
+    Or, just get a certificate
+    $ sudo certbot certonly --nginx
 
 	IMPORTANT NOTES:
 	 - Congratulations! Your certificate and chain have been saved at:
@@ -64,28 +73,25 @@ $ sudo certbot certonly --nginx
 	   version of this certificate in the future, simply run certbot
 	   again. To non-interactively renew *all* of your certificates, run
 	   "certbot renew"
-	 - If you like Certbot, please consider supporting our work by:
 
-	   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
-	   Donating to EFF:                    https://eff.org/donate-le
-
-# renew ssl ,  it will set cron job in   /etc/cron.d/certbot
+#####  renew ssl,  it will set cron job in  /etc/cron.d/certbot
 	$ sudo certbot renew --dry-run
 
-# Using wordpress plug-in "UPDRAFTPLUS" to back data  
+##### Install wordpress plug-in "UPDRAFTPLUS" to back data  
 #### (https://wordpress.blog.tw/updraftplus-wordpress-backup-plugin/)
 
-volumes : 
--------------------------------
-root@ubuntu:/home/jerry/wp-test# docker volume ls
+
+# volumes  operations : 
+---
+
+#####  $ docker volume ls
     DRIVER              VOLUME NAME
     local               c2474ac0824cb7303cce5d441803f18bba02f7b0361ff9f93299d8e6b339ab00
     local               daac2067d30553856bd8289c6937dcf2276c29667b0ebdf912a6114f42d96dd3
     local               wp-test_db_data
 
-$ docker volume inspect wp-test_db_data
-DB locate at :  /var/snap/docker/common/var-lib-docker/volumes/wp-test_db_data/_data
-    root@ubuntu:/home/jerry/wp-test# docker volume inspect wp-test_db_data
+##### $ docker volume inspect wp-test_db_data
+    # DB locate at :  /var/snap/docker/common/var-lib-docker/volumes/wp-test_db_data/_data
     [
         {
             "CreatedAt": "2020-02-21T10:39:58-08:00",
@@ -101,9 +107,10 @@ DB locate at :  /var/snap/docker/common/var-lib-docker/volumes/wp-test_db_data/_
             "Scope": "local"
         }
     ]
+    
 
-$ docker volume inspect wp-test_wordpress_1
-wordpress  locate at : 
+#### $ docker volume inspect wp-test_wordpress_1
+    # wordpress  locate at : "/var/snap/docker/common/var-lib-docker/volumes/c2474ac0824cb7303cce5d441803f18bba02f7b0361ff9f93299d8e6b339ab00/_data"
 
     "Mounts": [
                 {
@@ -118,20 +125,9 @@ wordpress  locate at :
                 }
             ],
             
-# other ref 
-backup manully : https://zju.date/wordpress-backup/
-docker run -d -e VIRTUAL_HOST=hosenmassage.ddns.net \
-              -e LETSENCRYPT_HOST=hosenmassage.ddns.net \
-              -e LETSENCRYPT_EMAIL=kc109763@gmail.com \
-              --network=webproxy \
-              --name my_app \
-              httpd:alpine
+# Other ref 
 
-root@ubuntu:/home/jerry/docker-compose-letsencrypt-nginx-proxy-companion# ./test_start_ssl.sh 192.168.157.129
-
-
-
-# log
+#### Rollback data from dropbox  
 onece I reinstall docker and the db data was broken which make the website  white blank. 
 I re-create container and assign new(empty) dir for mysql container. Then install the wordpress plugin "UpdraftPlus"  to restore data.
 
@@ -139,3 +135,16 @@ I re-create container and assign new(empty) dir for mysql container. Then instal
 - $ docker-compose up 
 - $ docker logs <container>
 - $ docker exec -it <container> bash 
+
+# backup manully 
+    https://zju.date/wordpress-backup/
+
+# nginx container
+$ docker run -d -e VIRTUAL_HOST=hosenmassage.ddns.net \
+              -e LETSENCRYPT_HOST=hosenmassage.ddns.net \
+              -e LETSENCRYPT_EMAIL=kc109763@gmail.com \
+              --network=webproxy \
+              --name my_app \
+              httpd:alpine
+
+root@ubuntu:/home/jerry/docker-compose-letsencrypt-nginx-proxy-companion# ./test_start_ssl.sh 192.168.157.129
