@@ -106,8 +106,7 @@ $ sudo vim /etc/nginx/nginx.conf
             "Options": null,
             "Scope": "local"
         }
-    ]
-    
+    ]  
 
 #### $ docker volume inspect wp-test_wordpress_1
     # wordpress  locate at : "/var/snap/docker/common/var-lib-docker/volumes/c2474ac0824cb7303cce5d441803f18bba02f7b0361ff9f93299d8e6b339ab00/_data"
@@ -131,6 +130,29 @@ $ sudo vim /etc/nginx/nginx.conf
 onece I reinstall docker and the db data was broken which make the website  white blank. 
 I re-create container and assign new(empty) dir for mysql container. Then install the wordpress plugin "UpdraftPlus"  to restore data.
 
+#### Every time upgrade OS then Restart docker-compose and got blank page 
+$ vim docker-compose.yml  
+chang the database volume. mounting path to the empty new one.
+
+$ docker-compose down
+$ docker-compose up
+
+you can see whole new wordpress page 
+
+$ Ctrl + Z 
+
+$ vim docker-compose.yml  
+chang the database volume. mounting path to the older one.
+$ docker-compose up -d
+
+then reinstall "UpdraftPlus"  to restore data.
+
+backupData contains :  db,  themes, plugins, uploads, others ...
+    volumes:
+      - "./themes:/var/www/html/wp-content/themes/"
+      - "./plugins:/var/www/html/wp-content/plugins/"
+      - "./uploads:/var/www/html/wp-content/uploads/"
+
 # debug run in forgroupd to see output log
 - $ docker-compose up 
 - $ docker logs <container>
@@ -148,3 +170,40 @@ $ docker run -d -e VIRTUAL_HOST=hosenmassage.ddns.net \
               httpd:alpine
 
 root@ubuntu:/home/jerry/docker-compose-letsencrypt-nginx-proxy-companion# ./test_start_ssl.sh 192.168.157.129
+
+
+
+
+---
+# docker-compose command 
+---
+##### docker-compose command to create containers and run in backround 
+    $ docker-compose up -d
+##### docker-compose command to show running containers
+    $ docker-compose ps
+##### docker-compose command to stop containers
+    $ docker-compose stop
+##### docker-compose command to remove containers
+    $ docker-compose rm
+##### if you modify the docker-compose.yaml file just restart the service. it will become effective
+    $ docker-compose restar <service ex:db>
+
+## volumes
+---
+- While you remove containers the volume dokcer-compose created will not be acturlly remove. 
+##### Command to show where volumes is (the volume acturlly path is in windows vm. )
+    $  docker inspect -f '{{range .Mounts}}{{.Source}}{{end}}' <containerId>    
+        /var/lib/docker/volumes/wordpress_db_data/_data
+##### show volume status 
+    $ docker volume ls 
+    $ docker volume inspect <wordpress_db_data>
+##### let volmes splite from container 
+    $ docker-compose down --volumes
+##### delete all volumes permanently  
+    $ docker volume prune
+    ##### WARNING! This will remove all local volumes not used by at least one container.
+    Are you sure you want to continue? [y/N] y
+
+##### while using windows K8s the volume will locate in C:\Users\jerry\.docker\Volumes
+    PS D:\workspace\wordpress> docker inspect -f '{{range .Mounts}}{{.Source}}{{end}}' 53d70322b90f    
+    /var/lib/kubelet/pods/34968a80-3ce8-11ea-adb3-00155d6d0107/containers/mysql/7c736abb/host_mnt/c/Users/jerry/.docker/Volumes/mysql-pv-claim/pvc-349664c5-3ce8-11ea-adb3-00155d6d0107/var/lib/kubelet/pods/34968a80-3ce8-11ea-adb3-00155d6d0107/volumes/kubernetes.io~secret/default-token-x4mkh/var/lib/kubelet/pods/34968a80-3ce8-11ea-adb3-00155d6d0107/etc-hosts
