@@ -123,7 +123,17 @@ $ sudo vim /etc/nginx/nginx.conf
                     "Propagation": ""
                 }
             ],
-            
+
+
+
+
+# DNS container.( host can comunicate with container, and run multiple container in one service )
+$ docker run --hostname dns.mageddo --restart=unless-stopped -p 5380:5380 \
+-v /var/run/docker.sock:/var/run/docker.sock \
+-v /etc/resolv.conf:/etc/resolv.conf \
+defreitas/dns-proxy-server
+- container must setting : hostname , network bridge mode.  
+
 # Other ref 
 
 #### Rollback data from dropbox  
@@ -170,6 +180,7 @@ $ docker run -d -e VIRTUAL_HOST=hosenmassage.ddns.net \
               httpd:alpine
 
 root@ubuntu:/home/jerry/docker-compose-letsencrypt-nginx-proxy-companion# ./test_start_ssl.sh 192.168.157.129
+
 
 
 

@@ -5,26 +5,35 @@ services:
      image: mysql:5.7
      volumes:
       #- db_data:/var/lib/mysql
-       - /home/jerry/wp-test/db_data:/var/lib/mysql
+       - /home/jerry/wp-test/db_data2:/var/lib/mysql
      restart: always
      environment:
        MYSQL_ROOT_PASSWORD: chttl232
        MYSQL_DATABASE: wordpress
        MYSQL_USER: wordpress
        MYSQL_PASSWORD: wordpress
-
+     hostname: db.docker
+     network_mode: bridge
    wordpress:
      depends_on:
        - db
      image: wordpress:latest
      ports:
-       - "8080:80"  #output port to internal port
+       - "80"   # no setting outport, so it will be floating.  
+      #- "8080:80"  #output port 8080 to internal port 80. nginx should setting forwarding to 8080. 
      restart: always
-     volumes:  #  default upload size is 2mb 
-       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+     volumes:
+       - /home/jerry/wp-test/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+       - /home/jerry/wp-test/uploads:/var/www/html/wp-content/uploads/
+       - /home/jerry/wp-test/themes:/var/www/html/wp-content/themes/
+       - /home/jerry/wp-test/plugins:/var/www/html/wp-content/plugins/
      environment:
-       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_HOST: db.docker:3306
        WORDPRESS_DB_USER: wordpress
        WORDPRESS_DB_PASSWORD: wordpress
+     hostname: wordpress.docker
+     network_mode: bridge
+     links:
+      - db:mysql
 #volumes:
 #    db_data: 
