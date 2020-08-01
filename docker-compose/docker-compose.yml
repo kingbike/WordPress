@@ -24,9 +24,10 @@ services:
      restart: always
      volumes:
        - /home/jerry/wp-test/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
-       - /home/jerry/wp-test/uploads:/var/www/html/wp-content/uploads/
-       - /home/jerry/wp-test/themes:/var/www/html/wp-content/themes/
-       - /home/jerry/wp-test/plugins:/var/www/html/wp-content/plugins/
+       - /home/jerry/wp-test/wp-content:/var/www/html/wp-content/
+         #- /home/jerry/wp-test/uploads:/var/www/html/wp-content/uploads/
+         #- /home/jerry/wp-test/themes:/var/www/html/wp-content/themes/
+         #- /home/jerry/wp-test/plugins:/var/www/html/wp-content/plugins/
      environment:
        WORDPRESS_DB_HOST: db.docker:3306
        WORDPRESS_DB_USER: wordpress

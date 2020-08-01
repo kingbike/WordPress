@@ -125,14 +125,21 @@ $ sudo vim /etc/nginx/nginx.conf
             ],
 
 
-
-
 # DNS container.( host can comunicate with container, and run multiple container in one service )
 $ docker run --hostname dns.mageddo --restart=unless-stopped -p 5380:5380 \
 -v /var/run/docker.sock:/var/run/docker.sock \
 -v /etc/resolv.conf:/etc/resolv.conf \
 defreitas/dns-proxy-server
 - container must setting : hostname , network bridge mode.  
+
+
+# I 'bypassed' the FTP credential page but got blocked by "Could not create directory" after the installation had finished.
+$ docker exec -u root -it {CONTAINER_ID} /bin/bash
+
+$ chown -R www-data wp-content
+
+$ chmod -R 755 wp-content
+
 
 # Other ref 
 
