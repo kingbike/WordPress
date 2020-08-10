@@ -121,7 +121,9 @@ $ sudo vim /etc/nginx/nginx.conf
             ],
 
 
-# DNS container.( host can comunicate with container, and run multiple container in one service )
+# DNS container.
+##  let host can comunicate with container, and run multiple container in one service
+## nginx run @host can use hostname 'wordpress.docke' to comunicate with wordpress
 $ docker run --hostname dns.mageddo --restart=unless-stopped -p 5380:5380 \
 -v /var/run/docker.sock:/var/run/docker.sock \
 -v /etc/resolv.conf:/etc/resolv.conf \

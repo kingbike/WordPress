@@ -33,26 +33,5 @@ services:
      network_mode: bridge
      links:
       - db:mysql
-   nginx:
-     depends_on:
-       - wordpress 
-     #image: staticfloat/nginx-certbot
-     image: nginx
-     container_name: nginx
-     ports:
-       - 80:80
-       - 443:443
-     volumes:
-       - /var/log/nginx:/var/log/nginx
-       - ./conf.d:/etc/nginx/conf.d:ro
-         #- /etc/nginx/conf.d:/etc/nginx/user.conf.d:ro
-         #- /etc/nginx/conf.d:/etc/nginx/conf.d:ro
-       - /etc/letsencrypt:/etc/letsencrypt
-     restart: always
-     environment:
-       - CERTBOT_EMAIL=kc109763@gmail.com
-     network_mode: "bridge"
-     links:
-      - wordpress:wordpress.docker
 #volumes:
 #    db_data: 
