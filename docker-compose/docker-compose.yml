@@ -36,7 +36,6 @@ services:
    nginx:
      depends_on:
        - wordpress 
-     #image: staticfloat/nginx-certbot
      image: nginx
      container_name: nginx
      ports:
@@ -45,8 +44,6 @@ services:
      volumes:
        - /var/log/nginx:/var/log/nginx
        - ./conf.d:/etc/nginx/conf.d:ro
-         #- /etc/nginx/conf.d:/etc/nginx/user.conf.d:ro
-         #- /etc/nginx/conf.d:/etc/nginx/conf.d:ro
        - /etc/letsencrypt:/etc/letsencrypt
      restart: always
      environment:
